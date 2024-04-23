@@ -1,0 +1,21 @@
+{
+  "name": "unit4.prismajuicebox",
+  "version": "1.0.0",
+  "description": "For this project, you will recreate the Juicebox API from scratch with the new technologies you have learned. You may structure your project as you wish, as long as you meet the requirements. Feel free to use one of the previous workshop solutions as a reference! Before you start, read through the rubric to get a sense of what you will be required to do.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node server/db/seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "nodemon": "^3.1.0",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "prisma": "^5.13.0"
+  }
+}
