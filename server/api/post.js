@@ -1,9 +1,9 @@
 const router = require('express').Router();
-
-
+const { getAllPosts, getPostById } = require('../db/client');
 
 // API route at /api/posts calls getAllPosts
-router.get('/posts', async (req, res) => {
+router.get('/', async (req, res) => {
+  console.log('working');
   try {
     const allPosts = await getAllPosts();
     res.send(allPosts);
@@ -14,7 +14,7 @@ router.get('/posts', async (req, res) => {
 });
 
 // API route at /api/posts/:id calls getPostById
-router.get('/posts/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const specifiedPost = await getPostById(parseInt(req.params.id));
     res.send(specifiedPost);
