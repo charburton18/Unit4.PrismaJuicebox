@@ -1,19 +1,18 @@
 const router = require('express').Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
-const { registerUser } = require('../db/client.js')
+const { registerUser, getUserByUsername } = require('../db/client.js')
 
-// signToken function (what does this do?)
+// signToken function
 const signToken = (id, username) => {
   const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
-    expiresIn: "1w",
+    expiresIn: "10w",
   });
-  return token;
+  return token; //string of num/letters
 };
 
-// create a user with a hashed password
+// POST /auth/register - create a user with a hashed password
 router.post("/register", async (req, res) => {
-  console.log('/register endpoint');
   //they give me a username and password on the body
   const username = req.body.username;
   const plainTextPassword = req.body.password;
@@ -26,12 +25,12 @@ router.post("/register", async (req, res) => {
 
   try {
     //Create the user with the username and hashed password
-    const user = registerUser(username, hashedPassword);
+    const user = await registerUser(username, hashedPassword);
     
     console.log('HASHED PASSWORD', hashedPassword);
 
     //Sign a token with user info
-    const token = signToken(user.username, user.id);
+    const token = signToken(user.id, user.username);
 
     //Send back the token
     res.send({ message: "Successful Registration", token });
@@ -41,7 +40,47 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// POST /auth/login - 
+// user puts in username and password
+// check that username exists in database (unique)
+  // if not, send 401 (unauth)
+// if exists, check if typed in password matches that user's password in db
+  // if it does not match, send 401 (unauth)
+  // if passwords match, then generate JWT
+  // return JWT to user
+//Log in a user
+router.post("/login", async (req, res) => {
+  //they give me a username and password on the body
+  const username = req.body.username;
+  const plainTextPassword = req.body.password;
 
-// router.post("/logic", async (req, res) => {};
+  //Does this user exist?
+  try {
+    const user = await getUserByUsername(username);
+
+    //If there is no user send back a 401 Unauthorized
+    if (!user) {
+      res.sendStatus(401);
+    } else {
+      //Check the password against the hash
+      const passwordIsAMatch = await bcrypt.compare(
+        plainTextPassword,
+        user.password
+      );
+      if (passwordIsAMatch) {
+        //This is a valid log in
+
+        const token = signToken(user.username, user.id);
+
+        res.send({ message: "Succesfully Logged in", token });
+      } else {
+        res.sendStatus(401);
+      }
+    }
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
 
 module.exports = router;

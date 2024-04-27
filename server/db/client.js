@@ -21,6 +21,7 @@ const registerUser = async (username, password) => {
     return newUser;
   } catch (err) {
     console.log('Error occurred', err);
+    throw err;
   }
 };
 
@@ -49,9 +50,24 @@ const getPostById = async (id) => {
   }
 };
 
+const getUserByUsername = async (username) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+    console.log(user);
+    return user; // getUserByUsername('Alice9') returns { id: 1, username: 'Alice9', password: 'abc' }
+  } catch (err) {
+    throw err;
+  }
+};
+
 
 module.exports = {
   registerUser,
   getAllPosts,
-  getPostById
+  getPostById,
+  getUserByUsername
 }
