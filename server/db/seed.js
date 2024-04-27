@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client')
-
 const prisma = new PrismaClient()
 
 // main is like sync and seed (connects to db, adds data)

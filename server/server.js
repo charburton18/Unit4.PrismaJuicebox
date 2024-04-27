@@ -1,19 +1,18 @@
-const express = require ('express');
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
-const client = require('./db/client');
-const { getAllPosts } = require('./api/post.js');
-const router = require('./api/index.js');
+const router = require('./api/index');
 
+// deprecated bc using prisma
 // connect server.js to db
-client.connect();
+// client.connect();
 
 //middleware
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 //API ROUTES PART 1
-app.use('/api', router);
-// app.use('/auth', require('./auth/auth.js'));
+app.use('/', router);
 
 
 app.listen(8080, () => console.log(`listening on port 8080`));
